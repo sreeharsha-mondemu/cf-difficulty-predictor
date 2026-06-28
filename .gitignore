@@ -1,0 +1,18 @@
+# data & cache (regenerable, large, and not yours to redistribute)
+data/
+cache/
+figures/*.tmp
+model.joblib
+data_synthetic.csv
+
+# python
+__pycache__/
+*.pyc
+.venv/
+venv/
+.ipynb_checkpoints/
+
+# os/editor
+.DS_Store
+.vscode/
+.idea/
