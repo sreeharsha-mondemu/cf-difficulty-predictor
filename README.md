@@ -34,11 +34,19 @@ near-duplicate problems from one round can't leak across the split).
 | Structured features (LightGBM) | 530 | 673 | 12.4% |
 | **Structured + TF-IDF (LightGBM)** | **480** | **641** | **17.3%** |
 
-Each tier improves monotonically over the baselines. The single most important feature is
-the parsed **constraint magnitude** - the order of magnitude of the input bound (`n ≤ 10⁵`
-vs `10¹⁸`), which encodes the intended complexity class.
+Each tier improves monotonically over the baselines.
 
 ![Feature importance](figures/feature_importance.png)
+
+*Structured-feature importances within the reported model (structured + TF-IDF).*
+
+The strongest structured signals are the count of constraint comparisons (`n_le`),
+modular-arithmetic presence (`has_mod`), and statement length. The parsed **constraint
+magnitude** ranks #5 here - but it is the **#1 structured feature when used on its own**;
+once TF-IDF is added, text tokens like `10^5` partly capture the same information, so
+explicit constraint magnitude drops while structural counts that text can't represent
+(`n_le`, `has_mod`) rise. That shift is itself a useful finding about what the statement
+text already encodes.
 
 ### The headline: cross-platform transfer
 
@@ -58,9 +66,10 @@ Codeforces tags are **deliberately excluded** from the model: they leak difficul
 don't exist on other platforms, which would break transfer. Everything is derived from the
 statement so it generalises:
 
-- **Constraint-magnitude parsing** - extracts the largest input bound from LaTeX (`10^5`,
-  `2 \cdot 10^5`, `10^{18}`), unicode (`≤`), and plain forms, excluding modulo primes like
-  `10⁹+7`. Coverage: **99.6%** of real statements.
+- **Constraint-magnitude parsing** - extracts the largest input bound (e.g. `n <= 10^5`),
+  reading LaTeX (`10^5`, `2 \cdot 10^5`, `10^{18}`), unicode (`≤`), and plain ASCII (`<=`)
+  notation, while excluding modulo primes such as `10^9 + 7`. Coverage: **99.6%** of real
+  statements.
 - Statement length (words, characters, sentences), math/LaTeX density, comparison-operator
   counts, modulo presence, and a curated bag of algorithm-suggestive keywords.
 - Metadata: time limit, memory limit, solved-count (log-scaled).
@@ -97,10 +106,18 @@ pip install -r requirements.txt
 # sanity-check the pipeline on synthetic data (no network needed):
 python make_synthetic.py && python train.py data_synthetic.csv
 # real run:
-python collect.py                 # builds data/cf_problems.csv (caches scraped pages)
-python train.py data/cf_problems.csv
-python crossplatform.py           # transfer + correlations + scatter plots
+python collect.py                       # builds data/cf_problems.csv (caches scraped pages)
+python train.py data/cf_problems.csv    # trains model, saves model.joblib
+python plots.py data/cf_problems.csv    # generates figures/feature_importance.png etc.
+python crossplatform.py                 # transfer + correlations + scatter plots
 ```
+
+**LeetCode / AtCoder scraping note:** `crossplatform.py` scrapes problem statements
+and caches them locally. LeetCode's GraphQL endpoint sometimes returns 403 without a
+logged-in session cookie; AtCoder may do the same. If blocked, the script prints a
+clear error. Set `LEETCODE_SESSION` or `ATCODER_SESSION` env vars to your browser
+session cookie, or pass `--no-scrape` to skip statement fetching (correlation will
+then use only cached data).
 
 ## Data sources & credits
 
