@@ -67,9 +67,8 @@ don't exist on other platforms, which would break transfer. Everything is derive
 statement so it generalises:
 
 - **Constraint-magnitude parsing** - extracts the largest input bound (e.g. n ≤ 100,000),
-  reading it whether written as LaTeX (10^5, 2·10^5, 10^18), unicode (≤), or plain ASCII
-  (<=), while excluding modulo primes such as 10^9 + 7. Coverage: **99.6%** of real
-  statements.
+  reading it whether written as LaTeX (10⁵, 2·10⁵, 10¹⁸), unicode (≤), or plain ASCII (<=), 
+  while excluding modulo primes such as 10⁹ + 7. Coverage: **99.6%** of real statements.
 - Statement length (words, characters, sentences), math/LaTeX density, comparison-operator
   counts, modulo presence, and a curated bag of algorithm-suggestive keywords.
 - Metadata: time limit, memory limit, solved-count (log-scaled).
