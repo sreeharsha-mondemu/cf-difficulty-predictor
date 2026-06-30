@@ -66,9 +66,9 @@ Codeforces tags are **deliberately excluded** from the model: they leak difficul
 don't exist on other platforms, which would break transfer. Everything is derived from the
 statement so it generalises:
 
-- **Constraint-magnitude parsing** - extracts the largest input bound (e.g. `n <= 10^5`),
-  reading LaTeX (`10^5`, `2 \cdot 10^5`, `10^{18}`), unicode (`≤`), and plain ASCII (`<=`)
-  notation, while excluding modulo primes such as `10^9 + 7`. Coverage: **99.6%** of real
+- **Constraint-magnitude parsing** - extracts the largest input bound (e.g. n ≤ 100,000),
+  reading it whether written as LaTeX (10^5, 2·10^5, 10^18), unicode (≤), or plain ASCII
+  (<=), while excluding modulo primes such as 10^9 + 7. Coverage: **99.6%** of real
   statements.
 - Statement length (words, characters, sentences), math/LaTeX density, comparison-operator
   counts, modulo presence, and a curated bag of algorithm-suggestive keywords.
